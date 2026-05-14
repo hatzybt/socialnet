@@ -71,7 +71,7 @@ while ($row = $others->fetch_assoc()) {
             <div class="avatar sm"><?= strtoupper(substr($f['fullname'],0,1)) ?></div>
             <div class="info">
               <div class="name"><?= htmlspecialchars($f['fullname']) ?></div>
-              <a href="profile.php?owner=<?= urlencode($f['username']) ?>" style="font-size:13px;color:#1877f2">View profile</a>
+              <a href="profile.php?owner=<?= urlencode($f['username']) ?>&csrf=<?= $_SESSION['csrf_token'] ?>" style="font-size:13px;color:#1877f2">View profile</a>
             </div>
           </div>
           <?php endforeach; ?>
@@ -94,7 +94,7 @@ while ($row = $others->fetch_assoc()) {
             <div class="name"><?= htmlspecialchars($f['fullname']) ?></div>
             <div class="username">@<?= htmlspecialchars($f['username']) ?></div>
           </div>
-          <a href="profile.php?owner=<?= urlencode($f['username']) ?>" class="btn btn-secondary btn-sm">Profile</a>
+          <a href="profile.php?owner=<?= urlencode($f['username']) ?>&csrf=<?= $_SESSION['csrf_token'] ?>" class="btn btn-secondary btn-sm">Profile</a>
           <form method="POST" style="margin-left:6px">
             <input type="hidden" name="friend_username" value="<?= htmlspecialchars($f['username']) ?>">
             <button type="submit" name="remove_friend" class="btn btn-sm" style="background:#f8d7da;color:#721c24">Unfriend</button>
@@ -116,7 +116,7 @@ while ($row = $others->fetch_assoc()) {
             <div class="name"><?= htmlspecialchars($s['fullname']) ?></div>
             <div class="username">@<?= htmlspecialchars($s['username']) ?></div>
           </div>
-          <a href="profile.php?owner=<?= urlencode($s['username']) ?>" class="btn btn-secondary btn-sm" style="margin-right:6px">Profile</a>
+          <a href="profile.php?owner=<?= urlencode($f['username']) ?>&csrf=<?= $_SESSION['csrf_token'] ?>" class="btn btn-secondary btn-sm" style="margin-right:6px">Profile</a>
           <form method="POST">
             <input type="hidden" name="friend_username" value="<?= htmlspecialchars($s['username']) ?>">
             <button type="submit" name="add_friend" class="btn btn-friend btn-sm">+ Add Friend</button>

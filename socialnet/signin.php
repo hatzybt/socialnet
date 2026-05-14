@@ -5,13 +5,12 @@ require 'config.php';
 
 $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = trim($_POST['username']);
-    $stmt = $conn->prepare("SELECT * FROM account WHERE username = ?");
-    $stmt->bind_param("s", $username);
-    $stmt->execute();
-    $result = $stmt->get_result()->fetch_assoc();
+    $username = $_POST['username'];
+    // VULNERABLE: raw query, no prepared statement
+    $result = $conn->query("SELECT * FROM account WHERE username='$username'")->fetch_assoc();
 
     if ($result && password_verify($_POST['password'], $result['password'])) {
+        // VULNERABLE: no session_regenerate_id
         $_SESSION['username'] = $result['username'];
         $_SESSION['fullname'] = $result['fullname'];
         header("Location: index.php"); exit();
@@ -59,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <div class="tagline">Connect with friends and the world.</div>
   <div class="card">
     <?php if ($error): ?>
-      <div class="alert-error">⚠️ <?= htmlspecialchars($error) ?></div>
+      <div class="alert-error">⚠️ <?= $error ?></div>
     <?php endif; ?>
     <form method="POST">
       <div class="form-group">
