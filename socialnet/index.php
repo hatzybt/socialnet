@@ -18,7 +18,18 @@ if (isset($_GET['add_friend'])) {
     header("Location: index.php");
     exit();
 }
-
+// Handle "Unfriend" action
+if (isset($_GET['unfriend'])) {
+    $friend_id = (int)$_GET['unfriend'];
+    $sql_get_my_id = "SELECT Id FROM account WHERE username='$current_user'";
+    $my_id = $conn->query($sql_get_my_id)->fetch_assoc()['Id'];
+    
+    // Delete the friendship from the database
+    $conn->query("DELETE FROM friend WHERE account_id = $my_id AND friend_id = $friend_id");
+    
+    header("Location: index.php");
+    exit();
+}
 // Fetch current user details [cite: 452]
 $sql = "SELECT * FROM account WHERE username='$current_user'";
 $user_info = $conn->query($sql)->fetch_assoc();
@@ -36,14 +47,16 @@ $my_id = $user_info['Id'];
     <h3>Your Friends</h3>
     <ul>
     <?php
-    // Fetch Friends [cite: 423]
+    // Fetch Friends
     $friend_sql = "SELECT account.Id, account.username FROM account 
                    JOIN friend ON account.Id = friend.friend_id 
                    WHERE friend.account_id = $my_id";
     $friends = $conn->query($friend_sql);
     while($f = $friends->fetch_assoc()) {
-        // View profile page (friend only) [cite: 367]
-        echo "<li><a href='profile.php?owner=" . $f['username'] . "'>" . $f['username'] . "</a></li>";
+        echo "<li>
+                <a href='profile.php?owner=" . $f['username'] . "'>" . $f['username'] . "</a> 
+                - <a href='index.php?unfriend=" . $f['Id'] . "'><button style='color:red;'>Unfriend</button></a>
+              </li>";
     }
     ?>
     </ul>
